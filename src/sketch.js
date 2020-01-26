@@ -249,7 +249,17 @@ function mousePressed() {
 }
 
 function gameOver(winner) {
-    background(0, 0, 255);
+    switch (mode) {
+        case 1:
+            image(pvpMenuBackground, 0, 0, width, height);
+            break;
+        case 2:
+            background(0, 0, 255);
+            break;
+        case 3:
+            background(0, 0, 255);
+            break;
+    }
     fill('green');
     switch (winner) {
     	case 1:
