@@ -4,6 +4,7 @@ let scoreToWin = 3;
 var mode = 0;
 var winner = 0;
 var surv = new survival();
+var currentBackground = 0;
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
@@ -44,12 +45,13 @@ function drawMenu() {
 
 function startSurvival() {
     mode = 3;
+    currentBackground = int(random(0, backgrounds.length - 0.1));
     players.push(new player(38, 40, 32, width / 10 * 9 - 50, width / 10 * 9 - 100));
 }
 
 function survivalCucle() {
     if (game) {
-        background(0, 0, 255);
+        image(backgrounds[currentBackground], 0, 0, width, height);
         surv.moveDrawMobs();
         drawPlayers();
         movePlayers();
@@ -75,19 +77,21 @@ function restartSurvival() {
     surv.level = 0;
     surv.hp = surv.startHp;
     surv.bank = surv.startBank;
+    currentBackground = int(random(0, backgrounds.length - 0.1));
     surv.mobs.splice(0, surv.mobs.length);
     players.push(new player(38, 40, 32, width / 10 * 9 - 50, width / 10 * 9 - 100));
 }
 
 function startPve() {
     mode = 2;
+    currentBackground = int(random(0, backgrounds.length - 0.1));
     players.push(new player(0, 0, 0, width / 10, width / 10 + 100));
     players.push(new player(38, 40, 32, width / 10 * 9 - 50, width / 10 * 9 - 100));
 }
 
 function pve() {
     if (game) {
-        background(0, 0, 255);
+        image(backgrounds[currentBackground], 0, 0, width, height);
         if (players[0].hp <= 0 && players[1].hp <= 0) {
             reload();
         } else if (players[0].hp <= 0) {
@@ -121,6 +125,7 @@ function pve() {
 
 function startPvp() {
     mode = 1;
+    currentBackground = int(random(0, backgrounds.length - 0.1));
     players.push(new player(87, 83, 68, width / 10, width / 10 + 100));
     players.push(new player(38, 40, 32, width / 10 * 9 - 50, width / 10 * 9 - 100));
 }
@@ -131,7 +136,7 @@ function stop() {
 
 function pvp() {
     if (game) {
-        background(0, 0, 255);
+        image(backgrounds[currentBackground], 0, 0, width, height);
         if (players[0].hp <= 0 && players[1].hp <= 0) {
             reload();
         } else if (players[0].hp <= 0) {

@@ -1,3 +1,54 @@
+class cannon {
+
+	constructor(type, x, y, w, h, side) {
+		this.x = x;
+		this.y = y + h / 2;
+		this.width = w;
+		this.height = h;
+		this.type = type;
+		this.side = side;
+        this.reloadTime = 15;
+        this.reload = this.reloadTime;
+        this.bulletSpeed = 5;
+        this.bulletSize = 10;
+		this.targetY = this.y + this.height / 2;
+		if (this.side == 1) {
+			this.x -= this.width / 2;
+			this.targetX = this.x + this.width;
+		} else {
+			this.targetX = this.x - this.width / 2;
+		}
+	}
+
+	shoot(bullets) {
+		bullets.push(new Bullet(this.targetX, this.targetY, this.targetX + this.side, this.targetY, this.bulletSpeed, this.bulletSize));
+	}
+
+	move(x, y) {
+		this.y = y + this.height / 2;
+		this.targetY = this.y + this.height / 2;
+		if (this.side == 1) {
+			this.x = x;
+			this.targetX = this.x + this.width;
+		} else {
+			this.x = x - this.width / 2;
+			this.targetX = this.x;
+		}
+	}
+
+	draw() {
+		if (this.side == 1) {
+			image(imageCannons[this.type], this.x, this.y, this.width, this.height);
+		} else {
+			translate(this.x + this.width, this.y + this.height);
+        	rotate(PI);
+			image(imageCannons[this.type], 0, 0, this.width, this.height);
+			rotate(PI);
+        	translate(-this.x - this.width, -this.y - this.height);
+		}
+	}
+}
+
 class vagon {
 
 	constructor(type, x, y, w, h) {
@@ -8,14 +59,18 @@ class vagon {
         this.hp = this.maxHp;
         this.x = x;
         this.y = y;
-        this.reload = 0;
-        this.reloadTime = 15;
-        this.bulletSpeed = 5;
-        this.bulletSize = 10;
+        this.cannon = new cannon(0, this.x, this.y, this.width * 2, this.height / 2, ((this.x > width / 2) ? -1 : 1));
     }
 
-    draw(x, y) {
-    	image(imageVagons[0], x, y + this.height / 20, this.width, this.height - this.height / 10);
+    move(x, y) {
+    	this.x = x;
+    	this.y = y;
+    	this.cannon.move(x, y);
+    }
+
+    draw() {
+    	image(imageVagons[this.type], this.x, this.y + this.height / 20, this.width, this.height - this.height / 10);
+    	this.cannon.draw();
     }
 }
 
@@ -67,12 +122,12 @@ class player {
         }
 
         for (var i = 0; i < this.vagons.length; i++) {
-        	if ((keyIsDown(this.shoot) || this.autoFire) && !this.vagons[i].reload) {
-        	    this.bullets.push(new Bullet(this.targetX + ((this.x > width / 2) ? 1 : -1), this.y + this.vagons[i].height / 2 + counter, this.targetX, this.y + this.vagons[i].height / 2 + counter, this.vagons[i].bulletSpeed, this.vagons[i].bulletSize));
-        	    this.vagons[i].reload = this.vagons[i].reloadTime;
+        	if ((keyIsDown(this.shoot) || this.autoFire) && !this.vagons[i].cannon.reload) {
+        	    this.vagons[i].cannon.shoot(this.bullets);
+        	    this.vagons[i].cannon.reload = this.vagons[i].cannon.reloadTime;
       	 	}
-       	 	if (this.vagons[i].reload) {
-        	    this.vagons[i].reload -= 1;
+       	 	if (this.vagons[i].cannon.reload) {
+        	    this.vagons[i].cannon.reload -= 1;
         	}
         	counter += this.vagons[i].height;
         }
@@ -84,6 +139,7 @@ class player {
           	    this.bullets[a].move();
           	 }
         }
+        this.moveVagons();
     }
 
     botMove(enemy) {
@@ -131,12 +187,12 @@ class player {
         }
 
         for (var i = 0; i < this.vagons.length; i++) {
-        	if (!this.vagons[i].reload) {
-        	    this.bullets.push(new Bullet(this.targetX + ((this.x > width / 2) ? 1 : -1), this.y + this.vagons[i].height / 2 + counter, this.targetX, this.y + this.vagons[i].height / 2 + counter, this.vagons[i].bulletSpeed, this.vagons[i].bulletSize));
-        	    this.vagons[i].reload = this.vagons[i].reloadTime;
+        	if (!this.vagons[i].cannon.reload) {
+        	    this.vagons[i].cannon.shoot(this.bullets);
+        	    this.vagons[i].cannon.reload = this.vagons[i].cannon.reloadTime;
       	 	}
-       	 	if (this.vagons[i].reload) {
-        	    this.vagons[i].reload -= 1;
+       	 	if (this.vagons[i].cannon.reload) {
+        	    this.vagons[i].cannon.reload -= 1;
         	}
         	counter += this.vagons[i].height;
         }
@@ -148,6 +204,7 @@ class player {
           	    this.bullets[a].move();
           	 }
         }
+        this.moveVagons();
     }
 
     collision(bullets) {
@@ -187,14 +244,20 @@ class player {
         rotate(PI);
         translate(-this.x, -this.y - counter * (this.vagons.length + 1) - this.vagons[this.vagons.length - 1].height / 20);
     	for (var i = this.vagons.length - 1; i >= 0; i--) {
-    		this.vagons[i].draw(this.x, this.y + counter);
-    		fill('pink');
-            ellipse(this.targetX, this.y + counter + this.vagons[i].height / 2, 10, 10);
-            counter += this.vagons[i].height;
+    		this.vagons[i].draw();
     	}
         fill('red');
         for (var a = 0; a < this.bullets.length; a++) {
             this.bullets[a].draw();
         }
+    }
+
+    moveVagons() {
+    	var counter = this.height / (this.vagons.length + 2);
+
+    	for (var i = this.vagons.length - 1; i >= 0; i--) {
+    		this.vagons[i].move(this.x, this.y + counter);
+            counter += this.vagons[i].height;
+    	}
     }
 }
