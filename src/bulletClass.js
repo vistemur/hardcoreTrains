@@ -1,8 +1,9 @@
 class Bullet {
-    constructor(startX, startY, targetX, targetY, speed, size) {
+    constructor(startX, startY, targetX, targetY, speed, damage, size) {
         this.y = startY
         this.x = startX
         this.size = size
+        this.damage = damage
         
         var minusingY = 1
         var minusing = 1

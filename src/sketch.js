@@ -5,6 +5,7 @@ var mode = 0;
 var winner = 0;
 var surv = new survival();
 var currentBackground = 0;
+var paused = false;
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
@@ -47,25 +48,31 @@ function startSurvival() {
     mode = 3;
     currentBackground = int(random(0, backgrounds.length - 0.1));
     players.push(new player(38, 40, 32, width / 10 * 9 - 50, width / 10 * 9 - 100));
+    surv.getVagonUpgrades();
 }
 
 function survivalCucle() {
     if (game) {
-        image(backgrounds[currentBackground], 0, 0, width, height);
-        surv.moveDrawMobs();
-        drawPlayers();
-        movePlayers();
-        textSize(25);
-        text("bank: " + surv.bank + "$", 10, 30);
-        text("hp: " + surv.hp, width / 2 - 30, 30);
-        text("level: " + surv.level, 10, 60);
-        surv.drawUpgrades();
-        surv.collision(players[0].bullets);
-        surv.levelUp();
-        if (surv.hp == 0) {
-            winner = 3;
-            game = false;
-            restartSurvival();
+        if (!paused) {
+            image(backgrounds[currentBackground], 0, 0, width, height);
+            fill('blue');
+            ellipse(width / 2, height / 10, height / 10, height / 10);
+            surv.moveDrawMobs();
+            players[0].draw(false);
+            movePlayers();
+            textSize(25);
+            text("bank: " + surv.bank + "$", 10, 30);
+            text("hp: " + surv.hp, width / 2 - 30, 30);
+            text("level: " + surv.level, 10, 60);
+            surv.drawUpgrades();
+            surv.drawVagonUpgrades();
+            surv.collision(players[0].bullets);
+            surv.levelUp();
+            if (surv.hp == 0) {
+                winner = 3;
+                game = false;
+                restartSurvival();
+            }
         }
     } else {
         gameOver(winner);
@@ -91,32 +98,36 @@ function startPve() {
 
 function pve() {
     if (game) {
-        image(backgrounds[currentBackground], 0, 0, width, height);
-        if (players[0].hp <= 0 && players[1].hp <= 0) {
-            reload();
-        } else if (players[0].hp <= 0) {
-            players[1].score++;
-            reload();
-            return;
-        } else if (players[1].hp <= 0) {
-            players[0].score++;
-            reload();
-            return;
-        }
-        players[0].botMove(players[1]);
-        players[1].move();
-        drawPlayers();
-        players[0].collision(players[1].bullets);
-        players[1].collision(players[0].bullets);
-        textSize(35);
-        text(players[0].score, 10, 30);
-        text(players[1].score, width - 30, 30);
-        if (players[0].score == scoreToWin) {
-            game = false;
-            winner = 3;
-        } else if (players[1].score == scoreToWin) {
-            game = false;
-            winner = 4;
+        if (!paused) {
+            image(backgrounds[currentBackground], 0, 0, width, height);
+            fill('blue');
+            ellipse(width / 2, height / 15, height / 10, height / 10);
+            if (players[0].hp <= 0 && players[1].hp <= 0) {
+                reload();
+            } else if (players[0].hp <= 0) {
+                players[1].score++;
+                reload();
+                return;
+            } else if (players[1].hp <= 0) {
+                players[0].score++;
+                reload();
+                return;
+            }
+            players[0].botMove(players[1]);
+            players[1].move();
+            drawPlayers();
+            players[0].collision(players[1].bullets);
+            players[1].collision(players[0].bullets);
+            textSize(35);
+            text(players[0].score, 10, 30);
+            text(players[1].score, width - 30, 30);
+            if (players[0].score == scoreToWin) {
+                game = false;
+                winner = 3;
+            } else if (players[1].score == scoreToWin) {
+                game = false;
+                winner = 4;
+            }
         }
     } else {
         gameOver(winner);
@@ -136,31 +147,35 @@ function stop() {
 
 function pvp() {
     if (game) {
-        image(backgrounds[currentBackground], 0, 0, width, height);
-        if (players[0].hp <= 0 && players[1].hp <= 0) {
-            reload();
-        } else if (players[0].hp <= 0) {
-            players[1].score++;
-            reload();
-            return;
-        } else if (players[1].hp <= 0) {
-            players[0].score++;
-            reload();
-            return;
-        }
-        movePlayers();
-        drawPlayers();
-        players[0].collision(players[1].bullets);
-        players[1].collision(players[0].bullets);
-        textSize(35);
-        text(players[0].score, 10, 30);
-        text(players[1].score, width - 30, 30);
-        if (players[0].score == scoreToWin) {
-            game = false;
-            winner = 1;
-        } else if (players[1].score == scoreToWin) {
-            game = false;
-            winner = 2;
+        if (!paused) {
+            image(backgrounds[currentBackground], 0, 0, width, height);
+            fill('blue');
+            ellipse(width / 2, height / 15, height / 10, height / 10);
+            if (players[0].hp <= 0 && players[1].hp <= 0) {
+                reload();
+            } else if (players[0].hp <= 0) {
+                players[1].score++;
+                reload();
+                return;
+            } else if (players[1].hp <= 0) {
+                players[0].score++;
+                reload();
+                return;
+            }
+            movePlayers();
+            drawPlayers();
+            players[0].collision(players[1].bullets);
+            players[1].collision(players[0].bullets);
+            textSize(35);
+            text(players[0].score, 10, 30);
+            text(players[1].score, width - 30, 30);
+            if (players[0].score == scoreToWin) {
+                game = false;
+                winner = 1;
+            } else if (players[1].score == scoreToWin) {
+                game = false;
+                winner = 2;
+            }
         }
     } else {
         gameOver(winner);
@@ -174,7 +189,7 @@ function movePlayers() {
 
 function drawPlayers() {
     for (a in players)
-        players[a].draw();
+        players[a].draw(true);
 }
 
 function reload() {
@@ -209,6 +224,16 @@ function mousePressed() {
                 stop();
                 mode = 0;
                 winner = 0;
+            } else if (paused) {
+                if (dist(width / 2, height / 2, mouseX, mouseY) <= width / 6) {
+                    paused = false;
+                } else if (dist(width / 9, height / 9, mouseX, mouseY) <= width / 20) {
+                    currentBackground = int(random(0, backgrounds.length - 0.1));
+                    paused = false;
+                    game = false;
+                }
+            } else if (!paused && dist(width / 2, height / 15, mouseX, mouseY) <= height / 20) {
+                pause();
             }
             break;
         case 2:
@@ -221,6 +246,20 @@ function mousePressed() {
                 stop();
                 mode = 0;
                 winner = 0;
+            } else if (!game && dist(width / 9, height / 9, mouseX, mouseY) <= width / 20) {
+                stop();
+                mode = 0;
+                winner = 0;
+            } else if (paused) {
+                if (dist(width / 2, height / 2, mouseX, mouseY) <= width / 6) {
+                    paused = false;
+                } else if (dist(width / 9, height / 9, mouseX, mouseY) <= width / 20) {
+                    currentBackground = int(random(0, backgrounds.length - 0.1));
+                    paused = false;
+                    game = false;
+                }
+            } else if (!paused && dist(width / 2, height / 15, mouseX, mouseY) <= height / 20) {
+                pause();
             }
             break;
         case 3:
@@ -236,12 +275,28 @@ function mousePressed() {
                 mode = 0;
                 winner = 0;
             }  else if (game) {
-                for (var i = surv.upgrades.length - 1; i >= 0; i--) {
+                var i;
+
+                for (i = surv.upgrades.length - 1; i >= 0; i--) {
                     if (mouseX > surv.upgrades[i].x && mouseX < surv.upgrades[i].x + surv.upgrades[i].width && mouseY > surv.upgrades[i].y && mouseY < surv.upgrades[i].y + surv.upgrades[i].height && surv.bank >= surv.upgrades[i].price) {
                         surv.upgrades[i].func(players[0]);
                         surv.bank -= surv.upgrades[i].price;
                         break;
                     }
+                }
+                for (i = surv.vagonUpgrades.length - 1; i >= 0; i--) {
+                    surv.vagonUpgrades[i].tap();
+                }
+                if (paused) {
+                    if (dist(width / 2, height / 2, mouseX, mouseY) <= width / 6) {
+                        paused = false;
+                    } else if (dist(width / 9, height / 9, mouseX, mouseY) <= width / 20) {
+                        restartSurvival()
+                        paused = false;
+                        game = false;
+                    }
+                } else if (!paused && dist(width / 2, height / 10, mouseX, mouseY) <= height / 20) {
+                    pause();
                 }
             }
             break;
@@ -283,4 +338,12 @@ function gameOver(winner) {
     text("start", width / 2.3, height / 1.95);
     textSize(width / 30);
     text("back", width / 13, height / 8.5);
+}
+
+function pause() {
+    paused = true;
+    background(0, 0, 0, 100);
+    fill('red');
+    ellipse(width / 2, height / 2, width / 3, width / 3);
+    ellipse(width / 9, height / 9, width / 10, width / 10);
 }

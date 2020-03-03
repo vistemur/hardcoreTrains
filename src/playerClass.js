@@ -11,6 +11,7 @@ class cannon {
         this.reload = this.reloadTime;
         this.bulletSpeed = 5;
         this.bulletSize = 10;
+        this.damage = 1;
 		this.targetY = this.y + this.height / 2;
 		if (this.side == 1) {
 			this.x -= this.width / 2;
@@ -21,7 +22,7 @@ class cannon {
 	}
 
 	shoot(bullets) {
-		bullets.push(new Bullet(this.targetX, this.targetY, this.targetX + this.side, this.targetY, this.bulletSpeed, this.bulletSize));
+		bullets.push(new Bullet(this.targetX, this.targetY, this.targetX + this.side, this.targetY, this.bulletSpeed, this.damage, this.bulletSize));
 	}
 
 	move(x, y) {
@@ -221,7 +222,7 @@ class player {
         this.height += this.vagons[this.vagons.length - 1].height;
     }
     
-    draw() {
+    draw(drawHp) {
     	var counter = this.height / (this.vagons.length + 2);
 
     	noStroke();
@@ -231,10 +232,12 @@ class player {
         }
     	rect(this.x + this.width / 10 * 2, 0, this.width / 10, height);
     	rect(this.x + this.width / 10 * 7, 0, this.width / 10, height);
-        rect(this.x, this.y - this.height / 10 * 3, this.width, this.height / 10);
-        fill('red');
-        rect(this.x + this.width / 2 - this.hp * (this.width / 2 / this.maxHp), this.y - this.height / 10 * 3, this.hp * (this.width / 2 / this.maxHp), this.height / 10);
-        rect(this.x + this.width / 2, this.y - this.height / 10 * 3, this.hp * (this.width / 2 / this.maxHp), this.height / 10);
+        if (drawHp) {
+            rect(this.x, this.y - this.height / 10 * 3, this.width, this.height / 10);
+            fill('red');
+            rect(this.x + this.width / 2 - this.hp * (this.width / 2 / this.maxHp), this.y - this.height / 10 * 3, this.hp * (this.width / 2 / this.maxHp), this.height / 10);
+            rect(this.x + this.width / 2, this.y - this.height / 10 * 3, this.hp * (this.width / 2 / this.maxHp), this.height / 10);
+        }
        	fill('white');
     	rect(this.x + this.width / 2 - this.width / 10, this.y, this.width / 5, this.height)
         image(imageVagonHeads[0], this.x, this.y, this.width, counter - this.vagons[0].height / 20);
