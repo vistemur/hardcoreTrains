@@ -68,7 +68,7 @@ class vagonUpgrade {
                     function(player) {
                         if (player.vagons[vagNum].cannon.reloadTime > 0) {
                             player.vagons[vagNum].cannon.reloadTime -= 1;
-                            surv.vagonUpgrades[surv.vagonUpgrades.length - 1 - vagNum].upgrades[1].price += 1;
+                            surv.vagonUpgrades[surv.vagonUpgrades.length - 1 - vagNum].upgrades[0].price += 1;
                         } else {
                             surv.bank += surv.vagonUpgrades[surv.vagonUpgrades.length - 1 - vagNum].upgrades[1].price;
                         }
