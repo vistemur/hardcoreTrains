@@ -62,13 +62,13 @@ class vagonUpgrade {
                 this.upgrades.push(new upgrade("damage", 1, 
                     function(player) {
 						player.vagons[vagNum].cannon.damage += 1;
-						surv.vagonUpgrades[surv.vagonUpgrades.length - 1 - vagNum].upgrades[1].price += 1;
+						surv.vagonUpgrades[surv.vagonUpgrades.length - 1 - vagNum].upgrades[0].price += 1;
 					}));
                 this.upgrades.push(new upgrade("reload", 1, 
                     function(player) {
                         if (player.vagons[vagNum].cannon.reloadTime > 0) {
                             player.vagons[vagNum].cannon.reloadTime -= 1;
-                            surv.vagonUpgrades[surv.vagonUpgrades.length - 1 - vagNum].upgrades[0].price += 1;
+                            surv.vagonUpgrades[surv.vagonUpgrades.length - 1 - vagNum].upgrades[1].price += 1;
                         } else {
                             surv.bank += surv.vagonUpgrades[surv.vagonUpgrades.length - 1 - vagNum].upgrades[1].price;
                         }
