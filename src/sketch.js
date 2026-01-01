@@ -81,10 +81,10 @@ function survivalCucle() {
 
 function restartSurvival() {
     stop();
-    surv = new survival();
-    surv.getUpgrades();
-    currentBackground = int(random(0, backgrounds.length - 0.1));
     players.push(new player(38, 40, 32, width / 10 * 9 - 50, width / 10 * 9 - 100));
+    surv = new survival();
+    surv.getVagonUpgrades();
+    currentBackground = int(random(0, backgrounds.length - 0.1));
 }
 
 function startPve() {
