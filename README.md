@@ -1,5 +1,7 @@
 # 🚂 HARDCORE TRAINS
 
+check the game: https://vistemur.github.io/hardcoreTrains
+
 web game made with `javascript` and [p5js](https://p5js.org/) library
 
 you play as a train and create a bullet hell (super hardcore)
