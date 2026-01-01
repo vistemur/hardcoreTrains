@@ -60,7 +60,10 @@ class vagonUpgrade {
         switch (players[0].vagons[this.vagonNumber].cannon.type) {
             case 0:
                 this.upgrades.push(new upgrade("damage", 1, 
-                    function(player) { player.vagons[vagNum].cannon.damage += 1 }));
+                    function(player) {
+						player.vagons[vagNum].cannon.damage += 1;
+						surv.vagonUpgrades[surv.vagonUpgrades.length - 1 - vagNum].upgrades[1].price += 1;
+					}));
                 this.upgrades.push(new upgrade("reload", 1, 
                     function(player) {
                         if (player.vagons[vagNum].cannon.reloadTime > 0) {
