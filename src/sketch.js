@@ -81,11 +81,8 @@ function survivalCucle() {
 
 function restartSurvival() {
     stop();
-    surv.level = 0;
-    surv.hp = surv.startHp;
-    surv.bank = surv.startBank;
+    surv = new survival();
     currentBackground = int(random(0, backgrounds.length - 0.1));
-    surv.mobs.splice(0, surv.mobs.length);
     players.push(new player(38, 40, 32, width / 10 * 9 - 50, width / 10 * 9 - 100));
 }
 
